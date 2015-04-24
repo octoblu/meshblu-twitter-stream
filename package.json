@@ -1,0 +1,20 @@
+{
+  "name": "meshblu-twitter-stream",
+  "repository": "octoblu/meshblu-twitter-stream",
+  "version": "1.0.0",
+  "scripts": {
+    "start": "node command.js",
+    "test": "exit 0"
+  },
+  "dependencies": {
+    "coffee-script": "^1.8.0",
+    "debug": "^2.1.0",
+    "lodash": "^3.7.0",
+    "meshblu": "^1.9.0",
+    "twitter": "^1.2.5"
+  },
+  "keywords": [
+    "meshblu-connector",
+    "gateblu"
+  ]
+}
