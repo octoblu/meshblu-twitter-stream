@@ -8,7 +8,7 @@ deploy:
   provider: npm
   email: serveradmin@octoblu.com
   api_key:
-    secure: rkhTtYBzPAYzQHqtkarsstxWVON/R6s7rsXMjkSgcZVqEJtgbVpNzxI57r0RvF6HejzTv3GM2CQtZ+D0giVo0wr4eMhfUMJhRbfJXePFr4dPuzVpTY2O+oeXPJ+T+pdrkIPdrcnD7SekvXs1NgIVRVD3Xzo4dVbvdLETcBaGR30=
+    secure: HFrDnLBEp8HsvIVf6QaBeZI6pB+gjrIHV+1YVPQNMK9StAHfegRLVvdlLnvnBqk72SqqjiVQ9R6zNtGiZkOGwuu5n1U+Iu5OK/MqlPpP01ZzUJMC1x6lnEOaYPwzqkzAsCaZyq8QD1vEUKbHSWDdUj3KE7+Cldxr7eGwGzkbfR4=
   on:
     tags: true
     repo: octoblu/meshblu-twitter-stream
