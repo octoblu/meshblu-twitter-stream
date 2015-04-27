@@ -4,11 +4,9 @@ node_js:
 sudo: false
 deploy:
   provider: npm
-  skip_cleanup: true
-  clean_up: false
   email: serveradmin@octoblu.com
   api_key:
-    secure: A841uu+WORDCzkE+gRQ+drIuUDomcWza/nt/8sgZhuCY4l9bPfmr/wYqYy8agGb/E0A7fGb4SLP5nClIgwM/aBYX2ml8GigYbuEANNBpmHBuxShUy43qB0PpV2o7D6zD9iCnrzupdSsvivZAu5HnTqe5TtaVMg68JzNVCPXM9eI=
+    secure: tEf3FEKGBTYHsaCz9LvffGAcKjwZK7QXCwP1gLS75Mag+cRvA9NU45eFFxA5K5VCtL9jdBnf1dB9tUtCCKTXzhFzcy8eySZTZruClhsg8weoVfdyrLco1A2i9soaoN6UhcetAT+iVkKL6HSvt1VDwvo8LdtKXjbSqVyYtuCk87k=
   on:
     tags: true
-    all_branches: true
+    repo: octoblu/meshblu-twitter-stream
