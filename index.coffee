@@ -1,7 +1,7 @@
 'use strict';
 util           = require 'util'
 {EventEmitter} = require 'events'
-debug          = require('debug')('meshblu-twitter-stream')
+debug          = require('debug')('meshblu-twitter-stream:index')
 _              = require 'lodash'
 TwitterStream  = require './twitter-stream'
 
@@ -43,25 +43,48 @@ class Plugin extends EventEmitter
     @optionsSchema = OPTIONS_SCHEMA
 
   onMessage: (message) =>
-    command = COMMANDS[message.payload?.command];
-    return unless command
+    command = COMMANDS[message.payload?.command]
+    return unless command?
+    debug 'running command', command
     @[command]()
 
   onConfig: (device) =>
     @setOptions device.options
 
   setOptions: (options={}) =>
-    @options = options
+    debug 'setting options', options
+    @options = _.extend {
+      consumerKey: ''
+      consumerSecret: ''
+      accessTokenKey: ''
+      accessTokenSecret: ''
+      searchQuery: ''
+    }, options
+    @options.consumerKey.trim()
+    @options.consumerSecret.trim()
+    @options.accessTokenKey.trim()
+    @options.accessTokenSecret.trim()
+    @options.searchQuery.trim()
+    debug 'set options', @options
 
-  emitTweet: (tweet) =>
+  emitTweet: (tweet={}) =>
+    debug 'emitting tweet', tweet.id_str
     data =
       devices: '*'
       topic: 'tweet'
       tweet: tweet
     @emit 'message', data
 
+  onError: (error) =>
+    debug 'error', error
+    data =
+      devices: '*'
+      topic: 'error'
+      error: error
+    @emit 'error', data
+
   startStreaming: =>
-    debug 'Starting twitter streamer'
+    debug 'starting twitter streamer'
     twitterCreds =
       consumer_key: @options.consumerKey
       consumer_secret: @options.consumerSecret
@@ -69,7 +92,7 @@ class Plugin extends EventEmitter
       access_token_secret: @options.accessTokenSecret
     @twitterStream = new TwitterStream twitterCreds
     throttleTweet = _.throttle @emitTweet, 100
-    @twitterStream.start(@options.searchQuery, throttleTweet)
+    @twitterStream.start @options.searchQuery, throttleTweet, @onError
 
   stopStreaming: =>
     debug 'stopping stream'
