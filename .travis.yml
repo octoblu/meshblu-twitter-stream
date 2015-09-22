@@ -1,14 +1,36 @@
 language: node_js
 node_js:
 - '0.10'
-sudo: false
+before_install:
+  - npm install npm -g
+before_deploy:
+  - npm install ws browserify coffeeify
+  - mkdir -p deploy/meshblu-twitter-stream/latest
+  - mkdir -p deploy/meshblu-twitter-stream/$TRAVIS_TAG
+  - node_modules/.bin/browserify -t coffeeify -s Connector connector.js > deploy/meshblu-twitter-stream/latest/meshblu-twitter-stream.js
+  - gzip deploy/meshblu-twitter-stream/latest/meshblu-twitter-stream.js
+  - mv deploy/meshblu-twitter-stream/latest/meshblu-twitter-stream.js.gz deploy/meshblu-twitter-stream/latest/meshblu-twitter-stream.js
+  - cp deploy/meshblu-twitter-stream/latest/meshblu-twitter-stream.js deploy/meshblu-twitter-stream/$TRAVIS_TAG/meshblu-twitter-stream.js
 deploy:
-  skip_cleanup: true
-  clean_up: false
-  provider: npm
-  email: serveradmin@octoblu.com
-  api_key:
-    secure: HFrDnLBEp8HsvIVf6QaBeZI6pB+gjrIHV+1YVPQNMK9StAHfegRLVvdlLnvnBqk72SqqjiVQ9R6zNtGiZkOGwuu5n1U+Iu5OK/MqlPpP01ZzUJMC1x6lnEOaYPwzqkzAsCaZyq8QD1vEUKbHSWDdUj3KE7+Cldxr7eGwGzkbfR4=
-  on:
-    tags: true
-    repo: octoblu/meshblu-twitter-stream
+  - provider: s3
+    region: us-west-2
+    skip_cleanup: true
+    detect_encoding: true
+    access_key_id: AKIAJH2D5IPIRHYJT5IA
+    secret_access_key:
+      secure: "HGMOFEcKr4KfPopwgZMw/VDzoYmYH+w4asDO+PuYL4ri5GkX4Pq8OvfZye+4HawnsHjbFTjF0ZLlPDgi06pGqTDY3h96tKE8Ew7KghtRMU+tEHNP4HLs/MkfC/xcAh4Fdg91bTIA9iPuXz2eIw+6pVa7HtvcTbwXzF7hmcY1Oeg="
+    bucket: octoblu-cdn
+    local-dir: deploy
+    upload-dir: js
+    on:
+      tags: true
+      all_branches: true
+  - provider: npm
+    skip_cleanup: true
+    clean_up: false
+    email: serveradmin@octoblu.com
+    api_key:
+      secure: "nvkgHf9qpVvM2wSFDOzGzEGCswhabOJl3+CkzVMjN1RNjY5RKXCx6WpR7VJn2Ske3Y2Z4i8RG0ekS80kJNdaht6aqFqhkNRL+3xmQy4/PTlSp6MCGWEAyAOKIR/CyZUx70CrmI16Vgjs7Okf57eRcXR5vRhd+NfC5j00AMLvvAY="
+    on:
+      tags: true
+      all_branches: true
