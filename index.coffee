@@ -3,7 +3,7 @@ util           = require 'util'
 {EventEmitter} = require 'events'
 debug          = require('debug')('meshblu-twitter-stream:index')
 _              = require 'lodash'
-TwitterStream  = require './twitter-stream'
+TwitterStream  = require './twitter-stream.coffee'
 
 MESSAGE_SCHEMA =
   type: 'object'
