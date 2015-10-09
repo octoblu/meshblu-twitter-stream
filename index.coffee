@@ -4,6 +4,7 @@ util           = require 'util'
 debug          = require('debug')('meshblu-twitter-stream:index')
 _              = require 'lodash'
 TwitterStream  = require './twitter-stream.coffee'
+TwitterRequest  = require './twitter-request.coffee'
 
 MESSAGE_SCHEMA =
   type: 'object'
@@ -11,7 +12,18 @@ MESSAGE_SCHEMA =
     command:
       type: 'string'
       required: true
-      default: 'start'
+      enum: ['start', 'stop', 'post', 'get']
+    request:
+      type: 'object'
+      properties:
+        params:
+          type: 'string'
+          default: {}
+        endpoints:
+          type: 'string'
+          title: 'endpoint'
+          default: 'some/endpoint'
+
 
 OPTIONS_SCHEMA =
   type: 'object'
@@ -34,7 +46,9 @@ OPTIONS_SCHEMA =
 
 COMMANDS =
   start: 'startStreaming'
-  stop: 'stopStreaming'
+  stop:  'stopStreaming'
+  get:   'getReq'
+  post:  'postReq'
 
 class Plugin extends EventEmitter
   constructor: ->
@@ -46,7 +60,9 @@ class Plugin extends EventEmitter
     command = COMMANDS[message.payload?.command]
     return unless command?
     debug 'running command', command
-    @[command]()
+    @[command](message.payload.request)
+
+
 
   onConfig: (device) =>
     @setOptions device.options
@@ -99,6 +115,23 @@ class Plugin extends EventEmitter
     return unless @twitterStream?
     @twitterStream.stop()
     @twitterStream = null
+
+  postReq: (request) ->
+    self = @
+    debug 'posting request'
+    @twitterReq = new TwitterRequest @options unless @twitterReq?
+    @twitterReq.post request, (data) ->
+      debug 'response is', data
+      self.emitTweet data
+
+  getReq: (request) =>
+    self = @
+    debug 'geting request'
+    @twitterReq = new TwitterRequest @options unless @twitterReq?
+    @twitterReq.get request, (data) ->
+      debug 'response is', data
+      self.emitTweet data
+
 
 module.exports =
   messageSchema: MESSAGE_SCHEMA
